@@ -3,154 +3,119 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BlackPhoenix Store - Plataforma Premium de Anúncios</title>
-  <link rel="stylesheet" href="/styles.css">
+  <title>BlackPhoenix Store</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .container {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 60px 40px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      max-width: 500px;
+    }
+    .logo {
+      font-size: 80px;
+      margin-bottom: 20px;
+      animation: pulse 2s infinite;
+    }
+    h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+      color: #ff6b6b;
+    }
+    p {
+      font-size: 18px;
+      margin-bottom: 30px;
+      color: #b0b0b0;
+    }
+    .status {
+      background: rgba(76, 175, 80, 0.3);
+      border-left: 4px solid #4caf50;
+      padding: 15px;
+      margin-bottom: 30px;
+      border-radius: 5px;
+      text-align: left;
+    }
+    .status-text {
+      color: #4caf50;
+      font-weight: bold;
+    }
+    .button {
+      display: inline-block;
+      background: linear-gradient(135deg, #ff6b6b 0%, #ff8e72 100%);
+      color: white;
+      padding: 12px 30px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: bold;
+      margin: 10px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+    }
+    .info {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #999;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+  </style>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="container">
-      <div class="logo">🔥 BlackPhoenix Store</div>
-      <ul class="nav-links">
-        <li><a href="#" onclick="showHome()">Home</a></li>
-        <li><a href="#" onclick="showAnuncios()">Anúncios</a></li>
-        <li><a href="#" id="adminLink" style="display:none;" onclick="showAdmin()">Painel Admin</a></li>
-        <li><a href="#" id="loginLink" onclick="showLogin()">Login</a></li>
-        <li><a href="#" id="sairLink" style="display:none;" onclick="logout()">Sair</a></li>
-      </ul>
+  <div class="container">
+    <div class="logo">🔥</div>
+    <h1>BlackPhoenix Store</h1>
+    <p>Sua plataforma de anúncios online</p>
+    
+    <div class="status">
+      <div class="status-text">✅ Servidor Online</div>
+      <div>Tudo funcionando perfeitamente!</div>
     </div>
-  </nav>
-
-  <div id="app">
-    <!-- Home -->
-    <div id="home" class="page">
-      <section class="hero">
-        <div class="container">
-          <h1>BlackPhoenix Store</h1>
-          <p>Plataforma Premium de Anúncios com Sistema de Avaliação</p>
-          <button onclick="showAnuncios()" class="btn btn-primary">Ver Anúncios</button>
-        </div>
-      </section>
-    </div>
-
-    <!-- Login -->
-    <div id="login" class="page" style="display:none;">
-      <div class="container auth-container">
-        <div class="auth-box">
-          <h2>Login</h2>
-          <form onsubmit="handleLogin(event)">
-            <input type="email" placeholder="Email" required>
-            <input type="password" placeholder="Senha" required>
-            <button type="submit" class="btn btn-primary">Entrar</button>
-          </form>
-          <p>Não tem conta? <a href="#" onclick="showRegistro()">Registre-se</a></p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Registro -->
-    <div id="registro" class="page" style="display:none;">
-      <div class="container auth-container">
-        <div class="auth-box">
-          <h2>Registro</h2>
-          <form onsubmit="handleRegistro(event)">
-            <input type="text" placeholder="Nome" required>
-            <input type="email" placeholder="Email" required>
-            <input type="password" placeholder="Senha" required>
-            <button type="submit" class="btn btn-primary">Registrar</button>
-          </form>
-          <p>Já tem conta? <a href="#" onclick="showLogin()">Faça login</a></p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Anúncios -->
-    <div id="anuncios" class="page" style="display:none;">
-      <div class="container">
-        <h1>Anúncios</h1>
-        <div id="anunciosGrid" class="grid"></div>
-      </div>
-    </div>
-
-    <!-- Admin Panel -->
-    <div id="admin" class="page" style="display:none;">
-      <div class="admin-container">
-        <aside class="admin-sidebar">
-          <h3>Painel Admin</h3>
-          <ul>
-            <li><a href="#" onclick="showDashboard()">📊 Dashboard</a></li>
-            <li><a href="#" onclick="showAdminAnuncios()">📢 Anúncios</a></li>
-            <li><a href="#" onclick="showAdminCategorias()">📁 Categorias</a></li>
-            <li><a href="#" onclick="showAdminAvaliacoes()">⭐ Avaliações</a></li>
-            <li><a href="#" onclick="showAdminPagamentos()">💳 Pagamentos</a></li>
-          </ul>
-        </aside>
-        <main class="admin-content">
-          <div id="dashboard" class="admin-section">
-            <h2>Dashboard</h2>
-            <div class="stats-grid">
-              <div class="stat-box">
-                <h3 id="totalAnuncios">0</h3>
-                <p>Anúncios Ativos</p>
-              </div>
-              <div class="stat-box">
-                <h3 id="totalUsuarios">0</h3>
-                <p>Usuários</p>
-              </div>
-              <div class="stat-box">
-                <h3 id="totalPagamentos">R$ 0</h3>
-                <p>Receita Total</p>
-              </div>
-              <div class="stat-box">
-                <h3 id="totalAvaliacoes">0</h3>
-                <p>Avaliações</p>
-              </div>
-            </div>
-          </div>
-
-          <div id="adminAnuncios" class="admin-section" style="display:none;">
-            <h2>Gerenciar Anúncios</h2>
-            <button onclick="showFormAnuncio()" class="btn btn-primary">+ Novo Anúncio</button>
-            <div id="formAnuncio" style="display:none;" class="form-container">
-              <form onsubmit="handleCriarAnuncio(event)">
-                <input type="text" placeholder="Título" id="tituloAnuncio" required>
-                <textarea placeholder="Descrição" id="descricaoAnuncio" required></textarea>
-                <select id="categoriaAnuncio" required>
-                  <option>Selecione uma categoria</option>
-                </select>
-                <input type="number" placeholder="Preço" id="precoAnuncio" step="0.01" required>
-                <button type="submit" class="btn btn-primary">Criar</button>
-              </form>
-            </div>
-            <div id="anunciosAdmin" class="table-container"></div>
-          </div>
-
-          <div id="adminCategorias" class="admin-section" style="display:none;">
-            <h2>Gerenciar Categorias</h2>
-            <button onclick="showFormCategoria()" class="btn btn-primary">+ Nova Categoria</button>
-            <div id="formCategoria" style="display:none;" class="form-container">
-              <form onsubmit="handleCriarCategoria(event)">
-                <input type="text" placeholder="Nome" id="nomeCategoria" required>
-                <textarea placeholder="Descrição" id="descricaoCategoria"></textarea>
-                <button type="submit" class="btn btn-primary">Criar</button>
-              </form>
-            </div>
-            <div id="categoriasAdmin" class="table-container"></div>
-          </div>
-
-          <div id="adminAvaliacoes" class="admin-section" style="display:none;">
-            <h2>Moderar Avaliações</h2>
-            <div id="avaliacoesAdmin" class="table-container"></div>
-          </div>
-
-          <div id="adminPagamentos" class="admin-section" style="display:none;">
-            <h2>Pagamentos Recebidos</h2>
-            <div id="pagamentosAdmin" class="table-container"></div>
-          </div>
-        </main>
-      </div>
+    
+    <button class="button" onclick="verificarAPI()">🧪 Testar API</button>
+    
+    <div class="info">
+      <p>🚀 Seu site está ao vivo!</p>
+      <p id="status"></p>
     </div>
   </div>
 
-  <script src="/app.js"></script>
+  <script>
+    async function verificarAPI() {
+      try {
+        const response = await fetch('/health');
+        const data = await response.json();
+        document.getElementById('status').innerHTML = '✅ API respondendo normalmente!';
+        alert('✅ Servidor está funcionando!\n\n' + JSON.stringify(data, null, 2));
+      } catch (error) {
+        document.getElementById('status').innerHTML = '❌ Erro ao conectar';
+        alert('❌ Erro: ' + error.message);
+      }
+    }
+  </script>
 </body>
 </html>

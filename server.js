@@ -5,36 +5,37 @@ require('dotenv').config();
 
 const app = express();
 
-// Middleware de segurança
+// Middleware
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// Inicializar banco de dados (opcional no inicio)
-let db = null;
-if (process.env.NODE_ENV === 'production') {
-  db = require('./config/database');
-  db.initialize().catch(err => {
-    console.error('Aviso: Erro ao conectar ao banco:', err.message);
-  });
-}
+// Dados em memória (temporário)
+const usuarios = [];
+const anuncios = [];
 
-// Rotas
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/admin', require('./routes/admin'));
-app.use('/api/anuncios', require('./routes/anuncios'));
-app.use('/api/avaliacoes', require('./routes/avaliacoes'));
-app.use('/api/pagamentos', require('./routes/pagamentos'));
-
-// Rota raiz
+// Rotas básicas
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
+  res.json({ mensagem: '🚀 BlackPhoenix Store está ONLINE!' });
 });
 
-// Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date() });
+});
+
+app.get('/api/anuncios', (req, res) => {
+  res.json({ anuncios: anuncios, total: anuncios.length });
+});
+
+app.post('/api/anuncios', (req, res) => {
+  const anuncio = { id: Date.now(), ...req.body, criado_em: new Date() };
+  anuncios.push(anuncio);
+  res.status(201).json(anuncio);
+});
+
+app.get('/api/auth/login', (req, res) => {
+  res.json({ message: 'API de autenticação' });
 });
 
 // Tratamento de erros
@@ -48,5 +49,6 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
-  console.log(`📦 Ambiente: ${process.env.NODE_ENV}`);
+  console.log(`📦 Ambiente: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`✅ Pronto para receber requisições!`);
 });

@@ -2,12 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 require('dotenv').config();
-const db = require('./config/database');
-const authRoutes = require('./routes/auth');
-const adminRoutes = require('./routes/admin');
-const anunciosRoutes = require('./routes/anuncios');
-const avaliacoesRoutes = require('./routes/avaliacoes');
-const pagamentosRoutes = require('./routes/pagamentos');
 
 const app = express();
 
@@ -17,22 +11,30 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// Inicializar banco de dados
-db.initialize().catch(err => {
-  console.error('Erro ao conectar ao banco:', err);
-  process.exit(1);
-});
+// Inicializar banco de dados (opcional no inicio)
+let db = null;
+if (process.env.NODE_ENV === 'production') {
+  db = require('./config/database');
+  db.initialize().catch(err => {
+    console.error('Aviso: Erro ao conectar ao banco:', err.message);
+  });
+}
 
 // Rotas
-app.use('/api/auth', authRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/anuncios', anunciosRoutes);
-app.use('/api/avaliacoes', avaliacoesRoutes);
-app.use('/api/pagamentos', pagamentosRoutes);
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/admin', require('./routes/admin'));
+app.use('/api/anuncios', require('./routes/anuncios'));
+app.use('/api/avaliacoes', require('./routes/avaliacoes'));
+app.use('/api/pagamentos', require('./routes/pagamentos'));
 
 // Rota raiz
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/index.html');
+});
+
+// Health check
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date() });
 });
 
 // Tratamento de erros

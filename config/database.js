@@ -1,11 +1,8 @@
 const { Pool } = require('pg');
 
 const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  port: process.env.DB_PORT || 5432,
-  database: process.env.DB_NAME || 'blackphoenix_db',
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD,
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
 pool.on('error', (err) => {
@@ -99,6 +96,22 @@ const createTables = async () => {
         atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
+
+    // Inserir admin padrão se não existir
+    const adminExistente = await client.query(
+      'SELECT * FROM usuarios WHERE email = $1',
+      [process.env.ADMIN_EMAIL || 'maluspherus@gmail.com']
+    );
+
+    if (adminExistente.rows.length === 0) {
+      const bcrypt = require('bcryptjs');
+      const senhaHash = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'malus2161@', 10);
+      await client.query(
+        'INSERT INTO usuarios (email, senha, nome, eh_admin) VALUES ($1, $2, $3, true)',
+        [process.env.ADMIN_EMAIL || 'maluspherus@gmail.com', senhaHash, 'Admin']
+      );
+      console.log('✅ Admin padrão criado');
+    }
 
   } finally {
     client.release();
